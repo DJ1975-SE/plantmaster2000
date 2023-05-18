@@ -65,8 +65,6 @@ async def main():
     for outputid in config.outputnames.keys():
         retval = await api.switch_command(key=outputid, state=ledstate)
         datadict={config.outputnames[outputid]["name"]:ledstate}
-        pprint.pprint(datadict)
-        pprint.pprint(config.outputnames[outputid]["sensor"])
         upload_to_influx(datadict,config.outputnames[outputid]["sensor"])
     print("Sleepin for " + str(config.loopsleep - int((time.perf_counter() - s))))
     await asyncio.sleep(config.loopsleep - int(time.perf_counter() - s))
