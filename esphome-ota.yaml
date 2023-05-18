@@ -101,6 +101,6 @@ sensor:
 
 switch:
   - platform: gpio
-    pin: 16
+    pin: GPIO16
     name: "ESP32 GPIO16"
 
