@@ -50,7 +50,6 @@ async def main():
     def change_callback(state):
         if (state.key in config.sensornames):
                 datadict={config.sensornames[state.key]["name"]: state.state} | verboseinfo
-#                print(f"{bcolors.OKGREEN}\tUploading " + str(config.sensornames[state.key]) + " (" + str(state.key) + ") = " + str(state.state) + f"{bcolors.ENDC}")
                 upload_to_influx(datadict,config.sensornames[state.key]["sensor"])
 
     # Subscribe to the state changes
