@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import config
 import aioesphomeapi
 import asyncio
 import time
 import pprint
 from influxdb import InfluxDBClient
+# config file contain all settings
+import config
 
 class bcolors:
     HEADER = '\033[95m'
@@ -27,12 +28,42 @@ def upload_to_influx(datadict,sensortype):
 #    client.write_points(data, time_precision='s')
 
 def get_influx_mavg(sensor_name,mavg_period):
-    query = 'select mean(\"' + sensor_name +  '\") from autogen.environment where time > now() - ' + mavg_period+ ' GROUP BY time(' + mavg_period + ') fill(null);'
+    query = 'select mean(\"' + sensor_name +  '\") from autogen.environment WHERE time > now() - ' + mavg_period+ ' GROUP BY time(' + mavg_period + ') fill(null);'
     result=client.query(query)
     # there will be 2 values returned, use the latter
     for data in list(result.get_points()):
         mavg=int(100 * data['mean'])
     return mavg
+
+def should_we_water(moving_avg, plantid):
+    print(str(config.mavg_period) + " moving average is " + str(moving_avg) + " of " + str(config.water_threshold))
+    # how many times did we water the last x hours
+    query = 'select count(\"' + config.outputswitch + '\") from autogen.environment WHERE time > now() - ' + config.mavg_period + ' AND \"' + config.outputswitch + '\" = True;'
+    # there is only one result, probably better ways to do this
+    result=client.query(query)
+    for data in list(result.get_points()):
+        countlastperiod=data['count']
+    print("We have watered " + str(countlastperiod) + " of " + str(config.water_max_times) + " times in the last " + str(config.water_max_period) + " hours")
+    if moving_avg > config.water_threshold:
+        if countlastperiod <= config.water_max_times:
+            print("Have not yet watered " + str(config.water_max_times) + " in the last " + str(config.water_max_period) + " hours, turning on pump")
+            pumpstate=True
+        else:
+            print("Have already watered " + str(config.water_max_times) + " in the last " + str(config.water_max_period) + " hours, leaving pump off")
+            pumpstate=False
+    else:
+        print("No water needed, leaving pump off")
+        pumpstate=False
+
+    for outputid in config.outputnames.keys():
+        datadict={config.outputnames[outputid]["name"]:pumpstate}
+        upload_to_influx(datadict,config.outputnames[outputid]["sensor"])
+
+    return pumpstate
+
+def run_pump(length, plantid):
+    return False
+
 
 async def main():
     # Establish connection
@@ -52,20 +83,15 @@ async def main():
                 datadict={config.sensornames[state.key]["name"]: state.state} | verboseinfo
                 upload_to_influx(datadict,config.sensornames[state.key]["sensor"])
 
-    # Subscribe to the state changes
+    # Subscribe to the state changes, callback function is called in the background
     await api.subscribe_states(change_callback)
-    mavg=get_influx_mavg(config.moistsensor,"24h")
-    # turn LED on or off based on mavg
-    if mavg > config.water_threshold:
-        print("Moving average is " + str(mavg) + " - running pump for " + str(config.water_pumptime) + " seconds")
-        ledstate=True
-    else:
-        print("Moving average is " + str(mavg) + " - not running pump")
-        ledstate=False
-    for outputid in config.outputnames.keys():
-        retval = await api.switch_command(key=outputid, state=ledstate)
-        datadict={config.outputnames[outputid]["name"]:ledstate}
-        upload_to_influx(datadict,config.outputnames[outputid]["sensor"])
+
+    # get the average moist level for the last period
+    mavg=get_influx_mavg(config.moistsensor,config.mavg_period)
+
+    # check if we should add more water based on waterings / day
+    if should_we_water(mavg,config.plant1):
+        run_pump(config.water_pumptime,config.plant1)
     print("Sleepin for " + str(config.loopsleep - int((time.perf_counter() - s))))
     await asyncio.sleep(config.loopsleep - int(time.perf_counter() - s))
     await api.disconnect()
