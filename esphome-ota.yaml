@@ -1,8 +1,8 @@
 esphome:
-  name: !secret esphomename
+  name: pm2k-devel-esp32
   project:
-    name: !secret projectname
-    version: !secret projectversion
+    name: "dj1975-se.plantmaster20000"
+    version: "2.2.1"
 
 esp32:
   board: nodemcu-32s
