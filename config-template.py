@@ -11,6 +11,10 @@ esp32cams=[{"hostname": "esp32cam-sa-1", "ip": "192.168.1.101", "mqtttopic": "es
            {"hostname": "esp32cam-sa-5", "ip": "192.168.1.105", "mqtttopic": "esp32cam-sa5","camkey": "##########"},
            {"hostname": "esp32cam-sa-6", "ip": "192.168.1.106", "mqtttopic": "esp32cam-sa6","camkey": "##########"}]
 
+# This is the target when using the helper scripts
+esphome_host="192.168.1.107"
+
+# This is the IP being a sensor ndoe
 esphome_sensorhost="192.168.1.107"
 esphome_port=6053
 esphome_api_keepalive=5
