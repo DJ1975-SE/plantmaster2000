@@ -1,0 +1,17 @@
+substitutions:
+  devicename: e32c-sa2023-2
+  hass_api_name: "esp32_cam_sa2"
+  my_ip: 192.168.1.102
+  my_gateway: 192.168.1.1
+  my_subnet: 255.255.255.0
+  mytopic: esp32camsleep/esp32cam-sa2
+  my_topic_prefix: esp32camsleep
+  my_otatopic: esp32camsleep/ota_mode
+  runduration: 2min
+  sleepduration: 60min
+  my_payload: 'online2023'
+  swname: 'dj1975.plantmaster2000-cam'
+  wifi_ssid: "SSID"
+  wifi_pass: "PSK"
+
+<<: !include esp32cam-core.yaml

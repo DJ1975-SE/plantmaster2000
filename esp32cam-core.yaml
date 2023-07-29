@@ -1,0 +1,133 @@
+esphome:
+  name: $devicename
+  project:
+    name: $swname
+    version: '2.6.4prod'
+
+esp32:
+  board: esp32cam
+  framework:
+    type: arduino
+
+deep_sleep:
+  run_duration: $runduration
+  sleep_duration: $sleepduration
+  id: powersaver
+
+wifi:
+  ssid: $wifi_ssid
+  password: $wifi_pass
+  fast_connect: true
+  manual_ip:
+    static_ip: $my_ip
+    gateway: $my_gateway
+    subnet: $my_subnet
+
+mdns:
+#  disabled: True
+  disabled: False
+
+# Enable logging
+logger:
+  level: INFO
+
+# Enable Home Assistant API
+# currently only way to get to camera
+api:
+  encryption:
+    key: !secret api_encrkey
+  reboot_timeout: 480min
+  id: $hass_api_name
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+  on_begin:
+    then:
+      - logger.log: "OTA start"
+      - deep_sleep.prevent: powersaver
+  on_progress:
+    then:
+      - logger.log:
+          format: "OTA progress %0.1f%%"
+          args: ["x"]
+  on_error:
+    then:
+      - logger.log:
+          format: "OTA update error %d"
+          args: ["x"]
+  on_end:
+    then:
+      - logger.log: "OTA end"
+
+esp32_camera:
+  name: $devicename
+  external_clock:
+    pin: GPIO0
+    frequency: 8MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  power_down_pin: GPIO32
+  resolution: 1280x1024
+  max_framerate: "1 fps"
+  idle_framerate: "0.00003 fps"
+  internal: false
+# cam settings
+  jpeg_quality: 10
+  contrast: 0
+  brightness: 0
+  saturation: 0
+  special_effect: none
+# Exposure, level -2 - +2, value 0-1200
+  aec_mode: auto
+  ae_level: 0
+  aec_value: 300
+# Gain, value 0-30
+  agc_mode: auto
+  agc_value: 0
+# White Balance
+  wb_mode: cloudy
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi RSSI"
+    update_interval: !secret updateinterval
+    internal: true
+text_sensor:
+  - platform: wifi_info
+    mac_address:
+      name: ESP Wifi MAC
+      internal: false
+      retain: false
+
+mqtt:
+  broker: !secret mqtt_brokerip
+  username: esp32cam
+  password: !secret mqtt_password
+  discovery: false
+  client_id: $devicename
+  topic_prefix: $my_topic_prefix
+  birth_message:
+    topic: $mytopic
+    payload: $my_payload
+  will_message:
+  shutdown_message:
+  reboot_timeout: 0s
+  keepalive: 30s
+  log_topic:
+    topic: $my_topic_prefix
+    level: NONE
+  on_message:
+    - topic: $my_otatopic
+      payload: 'ON'
+      then:
+        - deep_sleep.prevent: powersaver
+
+button:
+  - platform: restart
+    name: ${devicename}_restart
