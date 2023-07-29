@@ -1,5 +1,7 @@
 # plantmaster2000
-ESPHome / Grafana / MariaDB based environment for documenting plants. If you have 3 of them, for example.
+ESPHome / MQTT / Grafana / MariaDB based environment for documenting plants. If you have 3 of them, for example.
+
+Idea is that this setup should be controllable / integrateable with Homeassistant as well, which might be a better idea than this standalone setup.
 
 ## Principle
 * ESP32-CAM(s) running ESPHome code, taking pictures.
