@@ -30,6 +30,8 @@ Idea is that this setup should be controllable / integrateable with Homeassistan
 * you might need to press CTRL-C several times to break, due to the async and parallel code
 * you can change the name of the sensor from double, triplewhammy etc. it has no meaning or sense.
 * the only integration between the two python programse is through the sensor names in the config file, no magic.
+* if the MQTT server is restarted etc you need to restart the whole thing. That is why the scripts have a limited run length and restart after x iterations.
+* if the cameras are located within a grow tent, you might need to move the AP a lot closer since the reflection material also seems to affect radio waves.
 
 
 # TODO
