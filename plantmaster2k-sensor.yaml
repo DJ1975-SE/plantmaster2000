@@ -61,24 +61,6 @@ ads1115:
   - address: 0x48
 
 sensor:
-#  - platform: adc
-#    pin: GPIO34
-#    name: "GPIO34"
-#    attenuation: auto
-#    update_interval: !secret updateinterval
-
-#  - platform: adc
-#    pin: GPIO32
-#    name: "GPIO32"
-#    attenuation: auto
-#    update_interval: !secret updateinterval
-
-#  - platform: adc
-#    pin: GPIO33
-#    name: "GPIO33"
-#    attenuation: auto
-#    update_interval: !secret updateinterval
-
   - platform: htu21d
     temperature:
       name: "SHT21 Temperature"
@@ -106,25 +88,25 @@ sensor:
   - platform: ads1115
     multiplexer: 'A0_GND'
     name: "ads1115 a0"
-    gain: 2.048
+    gain: 6.144
     update_interval: !secret updateinterval
 
   - platform: ads1115
     multiplexer: 'A1_GND'
     name: "ads1115 a1"
-    gain: 2.048
+    gain: 6.144
     update_interval: !secret updateinterval
 
   - platform: ads1115
     multiplexer: 'A2_GND'
     name: "ads1115 a2"
-    gain: 2.048
+    gain: 6.144
     update_interval: !secret updateinterval
 
   - platform: ads1115
     multiplexer: 'A3_GND'
     name: "ads1115 a3"
-    gain: 2.048
+    gain: 6.144
     update_interval: !secret updateinterval
 
   - platform: wifi_signal
