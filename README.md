@@ -1,3 +1,5 @@
+![grafana_screenshot](https://github.com/DJ1975-SE/plantmaster2000/blob/main/presentation/grafana-example.png)
+
 # plantmaster2000
 ESPHome / MQTT / Grafana / MariaDB based environment for documenting plants. If you have 3 of them, for example.
 
