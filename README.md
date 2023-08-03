@@ -21,8 +21,6 @@ Idea is that this setup should be controllable / integrateable with Homeassistan
 * ```esphome compile plantmaster2k-sensor.yaml, esphome upload plantmaster2k-sensor.yaml``` or if you wish ```esphome run plantmaster2k-sensor.yaml``` and your sensor node is complete (1 sensor node per 3 or 4 plants is needed)
 * ```python esphome-plants.py``` which will connect to influx and the central node. It subscribes to the ESPHome sensors and uploads the results to an Influx bucket
 * ```python cam-mqtt-trigger.py``` which connects to MariaDB, MQTT and influx. It connects directly to cameras when they wake up (knowing when by snooping on MQTT wakeup messages), asks for an image and uploads it to the MariaDB DB.
-* (for later) the web interface to the images
-* (for later) the template / grafana dashboards 
 
 
 # Info
@@ -39,3 +37,4 @@ Idea is that this setup should be controllable / integrateable with Homeassistan
 # TODO
 * documentation / fritzing etc
 * polishing
+* example grafana dashboard
