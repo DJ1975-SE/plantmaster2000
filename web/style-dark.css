@@ -1,0 +1,26 @@
+td, th {
+  border: 1px solid black;
+  border-radius: 5px;
+  text-align: left;
+}
+parking {
+  border-collapse: collapse;
+  width: 85vw; // so 85% of the window's width
+}
+table {
+  border: 2px solid black;
+}
+
+div {
+  display:inline-block;
+}
+body {
+  background-color: black;
+  color: gray;
+}
+
+/*
+tr:hover {
+  background-color: coral;
+}
+*/
