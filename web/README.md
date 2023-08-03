@@ -17,3 +17,4 @@ A helper script named "batchexport.php" pulls the last X images from the databas
 # TODO
 * which php modules are needed, specific config? probably not
 * polishing, remaining web scripts
+* understand and fix the css
